@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-memory
+  namespace: ai-memory-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-memory
+  template:
+    metadata:
+      labels:
+        app: ai-memory
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - gww-1
+                      - gww-2
+      containers:
+        - name: ai-memory
+          image: docker.io/akitaonrails/ai-memory:latest
+          ports:
+            - containerPort: 49374
+              name: http
+          env:
+            - name: AI_MEMORY_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: ai-memory-credentials
+                  key: AI_MEMORY_AUTH_TOKEN
+            - name: AI_MEMORY_ALLOWED_HOSTS
+              value: "ai-memory.glauciolabs.work,localhost,127.0.0.1"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: ai-memory-data
+              mountPath: /data
+      volumes:
+        - name: ai-memory-data
+          hostPath:
+            path: /dados/ai-memory-app-production/data
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-memory
+  namespace: ai-memory-app
+spec:
+  ports:
+    - port: 49374
+      targetPort: 49374
+      name: http
+  selector:
+    app: ai-memory
+

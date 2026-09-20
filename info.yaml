@@ -1,0 +1,6 @@
+app:
+  name: ai-memory
+  version: v1.0.0
+  project: akita-ai-memory-app
+  namespace: ai-memory-app
+
