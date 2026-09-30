@@ -6,4 +6,4 @@ namespace: ai-memory-app
 resources:
   #- secrets.yaml
   - deployment.yaml
-  - httpproxy.yaml
+  - ingress.yaml

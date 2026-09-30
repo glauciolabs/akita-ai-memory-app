@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ai-memory
+  namespace: ai-memory-app
+  annotations:
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
+    cert-manager.io/cluster-issuer: "letsencrypt-cloudflare"
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - ai-memory.glauciolabs.work
+    secretName: ai-memory-tls
+  rules:
+  - host: ai-memory.glauciolabs.work
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ai-memory
+            port:
+              number: 49374

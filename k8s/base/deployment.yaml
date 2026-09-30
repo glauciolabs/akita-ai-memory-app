@@ -50,7 +50,7 @@ spec:
       volumes:
         - name: ai-memory-data
           hostPath:
-            path: /dados/ai-memory-app-production/data
+            path: /data/ai-memory-app-production/data
             type: DirectoryOrCreate
 ---
 apiVersion: v1
